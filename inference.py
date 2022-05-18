@@ -90,7 +90,7 @@ def main():
     plt.text(1.1, 1.8, "1.647", font="serif")
     plt.text(2.1, 1.8, "1.647", font="serif")
     plt.text(2.8, 1.3, "1.103", font="serif")
-    plt.savefig("graph.pdf")
+    #plt.savefig("graph.pdf")
 
     ################################################
     # Sensitivity Analysis via Dartmouth dataset
