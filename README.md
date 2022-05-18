@@ -1,18 +1,18 @@
-## A Causal Analysis of Sleep Quality on Academic Performance
+# A Causal Analysis of Sleep Quality on Academic Performance
 
 This repository contains a few directories and files used to produce the results obtained in my paper
 
-### The Effect of Sleep Quality on Academic Performance in Undergraduate Students
+# The Effect of Sleep Quality on Academic Performance in Undergraduate Students
 
 See the following descriptions below for guidance in this repository.
 
-# paper \\
+## paper \
 Contains a pdf of my final paper, along with a matplotlib graph summarizing my causal estimates.
 
-# util.py \\
+## util.py \
 Includes utility functions that read in csv, json files into pandas dataframes. Also includes a function to perform multiple imputations for missing data.
 
-# estimators.py \\
+## estimators.py \
 Includes a plethora of ACE estimators implemented by me! These estimators include Backdoor, IPW, AIPW, and Dual IPW.
 
 ***inference.py***
