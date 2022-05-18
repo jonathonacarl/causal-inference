@@ -1,5 +1,4 @@
-# causal-inference
-**A Causal Analysis of Sleep Quality on Academic Performance**
+##A Causal Analysis of Sleep Quality on Academic Performance
 
 This repository contains a few directories and files used to produce the results obtained in my paper
 
@@ -7,7 +6,7 @@ This repository contains a few directories and files used to produce the results
 
 See the following descriptions below for guidance in this repository.
 
-****paper****
+paper****
 Contains a pdf of my final paper, along with a matplotlib graph summarizing my causal estimates.
 
 ***util.py***
