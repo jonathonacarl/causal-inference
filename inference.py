@@ -50,29 +50,29 @@ def main():
     # Causal Estimation: Primal IPW and Dual IPW
     ################################################
     
-    di_edges = [('SQ', 'LGA'), ('PhysAct', 'LGA'), ('LGA', 'Exam'),
-    ('HSG', 'LGA'), ('HSG', 'Exam')]
+    # di_edges = [('SQ', 'LGA'), ('PhysAct', 'LGA'), ('LGA', 'Exam'),
+    # ('HSG', 'LGA'), ('HSG', 'Exam')]
 
-    bi_edges = [('SQ', 'PhysAct'), ('PhysAct', 'Exam'), ('SQ', 'Exam')]
-    G = ADMG(dfbasel.columns, di_edges, bi_edges)
+    # bi_edges = [('SQ', 'PhysAct'), ('PhysAct', 'Exam'), ('SQ', 'Exam')]
+    # G = ADMG(dfbasel.columns, di_edges, bi_edges)
 
-    ace_obj = CausalEffect(graph=G, treatment='SQ', outcome='Exam')
-    ace_pipw, Ql, Qu = ace_obj.compute_effect(
-        dfbasel, "p-ipw", n_bootstraps=200, alpha=0.05)
-    ace_apipw, Ql2, Qu2 = ace_obj.compute_effect(
-        dfbasel, "apipw", n_bootstraps=200, alpha=0.05)
-    ace_dipw, Ql3, Qu3 = ace_obj.compute_effect(
-        dfbasel, "d-ipw", n_bootstraps=200, alpha=0.05)
+    # ace_obj = CausalEffect(graph=G, treatment='SQ', outcome='Exam')
+    # ace_pipw, Ql, Qu = ace_obj.compute_effect(
+    #     dfbasel, "p-ipw", n_bootstraps=200, alpha=0.05)
+    # ace_apipw, Ql2, Qu2 = ace_obj.compute_effect(
+    #     dfbasel, "apipw", n_bootstraps=200, alpha=0.05)
+    # ace_dipw, Ql3, Qu3 = ace_obj.compute_effect(
+    #     dfbasel, "d-ipw", n_bootstraps=200, alpha=0.05)
     
-    print("Primal IPW (Ananke) ACE: ", np.exp(ace_pipw),
-          "(", np.exp(Ql), ", ", np.exp(Qu), ")")
-    print("Augmented Primal IPW (Ananke) ACE: ", np.exp(ace_apipw),
-          "(", np.exp(Ql2), ", ", np.exp(Qu2), ")")
-    print("Dual IPW (Ananke) ACE: ", np.exp(ace_dipw),
-          "(", np.exp(Ql3), ", ", np.exp(Qu3), ")")
+    # print("Primal IPW (Ananke) ACE: ", np.exp(ace_pipw),
+    #       "(", np.exp(Ql), ", ", np.exp(Qu), ")")
+    # print("Augmented Primal IPW (Ananke) ACE: ", np.exp(ace_apipw),
+    #       "(", np.exp(Ql2), ", ", np.exp(Qu2), ")")
+    # print("Dual IPW (Ananke) ACE: ", np.exp(ace_dipw),
+    #       "(", np.exp(Ql3), ", ", np.exp(Qu3), ")")
 
-    print("Dual IPW (own) ACE: ", np.exp(dual_ipw(data=dfbasel, Y="Exam", A="SQ",
-        M="LGA", Z=["PhysAct", "HSG"])))
+    # print("Dual IPW (own) ACE: ", np.exp(dual_ipw(data=dfbasel, Y="Exam", A="SQ",
+    #     M="LGA", Z=["PhysAct", "HSG"])))
     #     compute_confidence_intervals(Y="Exam", A="SQ", M="LGA", Z=["PhysAct", "HSG"],data=dfbasel,
     #     method_name=[dual_ipw, False]) 
     
@@ -103,7 +103,7 @@ def main():
     del dfdartmouth['id']
     dfdartmouth = predictVariable(dfdartmouth, "expectedGrade", ["study"])
     dfdartmouth = predictVariable(dfdartmouth, "gpa", ["study", "sleep", "stress"])
-    
+    print(dfdartmouth)
 
     # obtain causal estimate via aipw
     di_edges2 = [('exercise', 'sleep'), ('exercise', 'stress'), ('social', 'stress'),

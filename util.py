@@ -171,7 +171,7 @@ def predictVariable(df, X, Z):
     s = X + " ~  1  + " + " + ".join(Z)
     # generate model: assume outcome is continuous
     mod = sm.GLM.from_formula(
-        formula=s, data=dfObserved, family=sm.families.Binomial()).fit()
+        formula=s, data=dfObserved, family=sm.families.Gaussian()).fit()
 
     # move predictions column into original df
     predictions = mod.predict(dfNotObserved).to_frame()

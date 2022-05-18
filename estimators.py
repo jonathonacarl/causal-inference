@@ -206,8 +206,7 @@ def dual_ipw(data, Y, A, M, Z):
     f = M + " ~ " + ' + '.join([A] + Z)
     # multinomial logistic treatment variable
     mod = mnlogit(formula=f, data=data).fit()
-    # mod = sm.GLM.from_formula(formula=f, data=data,
-    #                            family=sm.families.Binomial()).fit()
+
     prop = mod.predict(data)
 
     # create treatment datasets
@@ -223,15 +222,13 @@ def dual_ipw(data, Y, A, M, Z):
     data_A0["propA0"] = np.ones(len(data))
     data_A1["propA1"] = np.ones(len(data))
 
+    # fill in propensity scores for all 3 datasets
     for i in range(len(data)):
 
         mVal = data.iloc[i][M]
         data.at[i, 'prop'] = prop.at[i, mVal - 1]
         data_A0.at[i, 'propA0'] = prop_A0.at[i, mVal - 1]
         data_A1.at[i, 'propA1'] = prop_A1.at[i, mVal - 1]
-        # data.at[i, 'prop'] = prop.at[i, mVal]
-        # data_A0.at[i, 'propA0'] = prop_A0.at[i, mVal]
-        # data_A1.at[i, 'propA1'] = prop_A1.at[i, mVal]
 
     # ACE
     return np.mean((data_A1['propA1']/data['prop']) * data[Y]) - np.mean((data_A0['propA0']/data['prop']) * data[Y])
