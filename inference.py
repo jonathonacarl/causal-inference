@@ -50,19 +50,23 @@ def main():
     # Sensitivity Analysis via Dartmouth dataset
     ################################################
 
-    sens_df = mergeDataFrames()
-    sens_df = sens_df.reset_index()
-    del sens_df['id']
+    # process Dartmouth data and predict missing data via multiple imputation
+    fDart = '/Users/jonathoncarl/s22/cs379/project/DartmouthData/'
+    dfDartmouth = mergeDataFrames(fDart)
+    dfDartmouth = dfDartmouth.reset_index()
+    del dfDartmouth['id']
+    dfDartmouth = predictVariable(dfDartmouth, "expectedGrade", ["study"])
+    dfDartmouth = predictVariable(dfDartmouth, "gpa", ["study", "sleep", "stress"])
     di_edges2 = [('exercise', 'sleep'), ('exercise', 'stress'), ('social', 'stress'),
     ('study', 'expectedGrade'), ('expectedGrade', 'gpa'), ('stress', 'gpa'), ('sleep', 'gpa')]
 
     bi_edges2 = [('study', 'sleep'), ('sleep', 'stress')]
 
-    G2 = ADMG(sens_df.columns, di_edges2, bi_edges2)
+    G2 = ADMG(dfDartmouth.columns, di_edges2, bi_edges2)
 
     ace_obj2 = CausalEffect(graph=G2, treatment='sleep', outcome='gpa')
     ace_sens, Ql_sens, Qu_sens = ace_obj2.compute_effect(
-        sens_df, "aipw", n_bootstraps=200, alpha=0.05)
+        dfDartmouth, "aipw", n_bootstraps=200, alpha=0.05)
     print("AIPW ACE: ", ace_sens, "(", Ql_sens, ",", Qu_sens, ")")
 
     ################################################

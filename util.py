@@ -121,12 +121,12 @@ def findIndicators(directory):
         return ["ID", "SQ", "PhysAct", "Exam", "HSG", "LGA"]
     return None
 
-def mergeDataFrames():
+def mergeDataFrames(f):
     """
     The function used to produce a pandas dataframe from Wang et. al's data (Dartmouth University)
     """
 
-    path = '/Users/jonathoncarl/s22/cs379/project/myDataset/'
+    path = f
     directoriesJSON = [i for i in os.listdir(path) if "." not in i and i != "education"]
     warnings.filterwarnings('ignore')
     dfs = []
@@ -193,7 +193,7 @@ def main():
     """
     Implemented for testing purposes.
     """
-    f = "/Users/jonathoncarl/s22/cs379/project/dataverse_files-2/academicSleep.csv"
+    f = "/Users/jonathoncarl/s22/cs379/project/BaselData/academicSleep.csv"
     df = readNewData(f)
     # convert sleep quality from multinomial to binary
     df['SQ'] = (df['SQ'] > df['SQ'].median())*1
@@ -203,6 +203,17 @@ def main():
     df['LGA'] = df['LGA'].apply(int)
     df = df.reset_index()
     del df['id']
-    
+
+
+    # process Dartmouth data and predict missing data via multiple imputation
+    fDart = '/Users/jonathoncarl/s22/cs379/project/DartmouthData/'
+    dfDartmouth = mergeDataFrames(fDart)
+    dfDartmouth = dfDartmouth.reset_index()
+    del dfDartmouth['id']
+    dfDartmouth = predictVariable(dfDartmouth, "expectedGrade", ["study"])
+    dfDartmouth = predictVariable(dfDartmouth, "gpa", ["study", "sleep", "stress"])
+    print(dfDartmouth)
+    print(df)
+
 if __name__ == '__main__':
     main()
