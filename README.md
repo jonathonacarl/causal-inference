@@ -1,8 +1,8 @@
-##A Causal Analysis of Sleep Quality on Academic Performance
+## A Causal Analysis of Sleep Quality on Academic Performance
 
 This repository contains a few directories and files used to produce the results obtained in my paper
 
-**The Effect of Sleep Quality on Academic Performance in Undergraduate Students**
+### The Effect of Sleep Quality on Academic Performance in Undergraduate Students
 
 See the following descriptions below for guidance in this repository.
 
