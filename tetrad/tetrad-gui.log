@@ -1,0 +1,5 @@
+2022-05-17 21:15:05 ERROR edu.pitt.dbmi.data.reader.tabular.TabularColumnFileReader:216 - Missing variable name on line 1 at column 1.
+2022-05-17 21:16:33 ERROR edu.pitt.dbmi.data.reader.tabular.TabularColumnFileReader:216 - Missing variable name on line 1 at column 1.
+2022-05-17 21:20:20 INFO  org.reflections.Reflections:219 - Reflections took 80 ms to scan 1 urls, producing 15 keys and 275 values
+2022-05-17 21:20:28 INFO  org.reflections.Reflections:219 - Reflections took 18 ms to scan 1 urls, producing 8 keys and 43 values
+2022-05-17 21:20:28 INFO  org.reflections.Reflections:219 - Reflections took 8 ms to scan 1 urls, producing 8 keys and 40 values

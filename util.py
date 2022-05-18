@@ -212,8 +212,8 @@ def main():
     del dfDartmouth['id']
     dfDartmouth = predictVariable(dfDartmouth, "expectedGrade", ["study"])
     dfDartmouth = predictVariable(dfDartmouth, "gpa", ["study", "sleep", "stress"])
-    print(dfDartmouth)
-    print(df)
+    df.to_csv('BaselDF.csv', index=False)
+    dfDartmouth.to_csv('DartmouthDF.csv', index=False)
 
 if __name__ == '__main__':
     main()
