@@ -8,7 +8,6 @@ from statsmodels.formula.api import mnlogit
 import random
 import math
 from util import *
-from fcit import fcit
 
 def odds_ratio(X, Y, Z, data):
     """

@@ -7,7 +7,6 @@ from time import sleep
 from tkinter import font
 from util import *
 from estimators import *
-from discovery import *
 from ananke.graphs import ADMG
 from ananke.identification import OneLineID
 from ananke.estimation import CausalEffect
@@ -27,6 +26,7 @@ def main():
     1. Orient pd dataframe for analysis
     2. Causal Estimation via Primal IPW, Augmented Primal IPW, and Dual IPW
     3. Estimates visualized in matplotlib
+    4. Sensitivity Analysis with Dartmouth Dataset
     """
     np.random.seed(0)
     
@@ -34,7 +34,7 @@ def main():
     # Orient pd dataframe for analysis
     ################################################
 
-    f = "/Users/jonathoncarl/s22/cs379/project/dataverse_files-2/academicSleep.csv"
+    f = "/Users/jonathoncarl/s22/cs379/project/BaselData/academicSleep.csv"
     df = readNewData(f)
     
     # convert sleep quality from multinomial to binary
@@ -45,29 +45,6 @@ def main():
     df['LGA'] = df['LGA'].apply(int)
     df = df.reset_index()
     del df['id']
-
-    ################################################
-    # Sensitivity Analysis via Dartmouth dataset
-    ################################################
-
-    # process Dartmouth data and predict missing data via multiple imputation
-    fDart = '/Users/jonathoncarl/s22/cs379/project/DartmouthData/'
-    dfDartmouth = mergeDataFrames(fDart)
-    dfDartmouth = dfDartmouth.reset_index()
-    del dfDartmouth['id']
-    dfDartmouth = predictVariable(dfDartmouth, "expectedGrade", ["study"])
-    dfDartmouth = predictVariable(dfDartmouth, "gpa", ["study", "sleep", "stress"])
-    di_edges2 = [('exercise', 'sleep'), ('exercise', 'stress'), ('social', 'stress'),
-    ('study', 'expectedGrade'), ('expectedGrade', 'gpa'), ('stress', 'gpa'), ('sleep', 'gpa')]
-
-    bi_edges2 = [('study', 'sleep'), ('sleep', 'stress')]
-
-    G2 = ADMG(dfDartmouth.columns, di_edges2, bi_edges2)
-
-    ace_obj2 = CausalEffect(graph=G2, treatment='sleep', outcome='gpa')
-    ace_sens, Ql_sens, Qu_sens = ace_obj2.compute_effect(
-        dfDartmouth, "aipw", n_bootstraps=200, alpha=0.05)
-    print("AIPW ACE: ", ace_sens, "(", Ql_sens, ",", Qu_sens, ")")
 
     ################################################
     # Causal Estimation: Primal IPW and Dual IPW
@@ -114,6 +91,31 @@ def main():
     plt.text(2.1, 1.8, "1.647", font="serif")
     plt.text(2.8, 1.3, "1.103", font="serif")
     plt.savefig("graph.pdf")
+
+    ################################################
+    # Sensitivity Analysis via Dartmouth dataset
+    ################################################
+
+    # process Dartmouth data and predict missing data via multiple imputation
+    fDart = '/Users/jonathoncarl/s22/cs379/project/DartmouthData/'
+    dfDartmouth = mergeDataFrames(fDart)
+    dfDartmouth = dfDartmouth.reset_index()
+    del dfDartmouth['id']
+    dfDartmouth = predictVariable(dfDartmouth, "expectedGrade", ["study"])
+    dfDartmouth = predictVariable(
+        dfDartmouth, "gpa", ["study", "sleep", "stress"])
+    di_edges2 = [('exercise', 'sleep'), ('exercise', 'stress'), ('social', 'stress'),
+                 ('study', 'expectedGrade'), ('expectedGrade', 'gpa'), ('stress', 'gpa'), ('sleep', 'gpa')]
+
+    bi_edges2 = [('study', 'sleep'), ('sleep', 'stress')]
+
+    G2 = ADMG(dfDartmouth.columns, di_edges2, bi_edges2)
+
+    ace_obj2 = CausalEffect(graph=G2, treatment='sleep', outcome='gpa')
+    ace_sens, Ql_sens, Qu_sens = ace_obj2.compute_effect(
+        dfDartmouth, "aipw", n_bootstraps=200, alpha=0.05)
+    print("AIPW ACE (Dartmouth): ", ace_sens, "(", Ql_sens, ",", Qu_sens, ")")
+
 
 if __name__ == "__main__":
     main()
