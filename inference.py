@@ -35,16 +35,16 @@ def main():
     ################################################
 
     f = "/Users/jonathoncarl/s22/cs379/project/BaselData/academicSleep.csv"
-    df = readNewData(f)
+    dfbasel = readNewData(f)
     
     # convert sleep quality from multinomial to binary
-    df['SQ'] = (df['SQ'] > df['SQ'].median())*1
+    dfbasel['SQ'] = (dfbasel['SQ'] > dfbasel['SQ'].median())*1
     
     # round LGA values up
-    df['LGA'] = df['LGA'].apply(np.ceil)
-    df['LGA'] = df['LGA'].apply(int)
-    df = df.reset_index()
-    del df['id']
+    dfbasel['LGA'] = dfbasel['LGA'].apply(np.ceil)
+    dfbasel['LGA'] = dfbasel['LGA'].apply(int)
+    dfbasel = dfbasel.reset_index()
+    del dfbasel['id']
 
     ################################################
     # Causal Estimation: Primal IPW and Dual IPW
@@ -54,15 +54,15 @@ def main():
     ('HSG', 'LGA'), ('HSG', 'Exam')]
 
     bi_edges = [('SQ', 'PhysAct'), ('PhysAct', 'Exam'), ('SQ', 'Exam')]
-    G = ADMG(df.columns, di_edges, bi_edges)
+    G = ADMG(dfbasel.columns, di_edges, bi_edges)
 
     ace_obj = CausalEffect(graph=G, treatment='SQ', outcome='Exam')
     ace_pipw, Ql, Qu = ace_obj.compute_effect(
-        df, "p-ipw", n_bootstraps=200, alpha=0.05)
+        dfbasel, "p-ipw", n_bootstraps=200, alpha=0.05)
     ace_apipw, Ql2, Qu2 = ace_obj.compute_effect(
-        df, "apipw", n_bootstraps=200, alpha=0.05)
+        dfbasel, "apipw", n_bootstraps=200, alpha=0.05)
     ace_dipw, Ql3, Qu3 = ace_obj.compute_effect(
-        df, "d-ipw", n_bootstraps=200, alpha=0.05)
+        dfbasel, "d-ipw", n_bootstraps=200, alpha=0.05)
     
     print("Primal IPW (Ananke) ACE: ", np.exp(ace_pipw),
           "(", np.exp(Ql), ", ", np.exp(Qu), ")")
@@ -71,9 +71,9 @@ def main():
     print("Dual IPW (Ananke) ACE: ", np.exp(ace_dipw),
           "(", np.exp(Ql3), ", ", np.exp(Qu3), ")")
 
-    print("Dual IPW (own) ACE: ", np.exp(dual_ipw(data=df, Y="Exam", A="SQ",
+    print("Dual IPW (own) ACE: ", np.exp(dual_ipw(data=dfbasel, Y="Exam", A="SQ",
         M="LGA", Z=["PhysAct", "HSG"])))
-    #     compute_confidence_intervals(Y="Exam", A="SQ", M="LGA", Z=["PhysAct", "HSG"],data=df,
+    #     compute_confidence_intervals(Y="Exam", A="SQ", M="LGA", Z=["PhysAct", "HSG"],data=dfbasel,
     #     method_name=[dual_ipw, False]) 
     
     ##################################
@@ -98,22 +98,24 @@ def main():
 
     # process Dartmouth data and predict missing data via multiple imputation
     fDart = '/Users/jonathoncarl/s22/cs379/project/DartmouthData/'
-    dfDartmouth = mergeDataFrames(fDart)
-    dfDartmouth = dfDartmouth.reset_index()
-    del dfDartmouth['id']
-    dfDartmouth = predictVariable(dfDartmouth, "expectedGrade", ["study"])
-    dfDartmouth = predictVariable(
-        dfDartmouth, "gpa", ["study", "sleep", "stress"])
+    dfdartmouth = mergeDataFrames(fDart)
+    dfdartmouth = dfdartmouth.reset_index()
+    del dfdartmouth['id']
+    dfdartmouth = predictVariable(dfdartmouth, "expectedGrade", ["study"])
+    dfdartmouth = predictVariable(dfdartmouth, "gpa", ["study", "sleep", "stress"])
+    
+
+    # obtain causal estimate via aipw
     di_edges2 = [('exercise', 'sleep'), ('exercise', 'stress'), ('social', 'stress'),
                  ('study', 'expectedGrade'), ('expectedGrade', 'gpa'), ('stress', 'gpa'), ('sleep', 'gpa')]
 
     bi_edges2 = [('study', 'sleep'), ('sleep', 'stress')]
 
-    G2 = ADMG(dfDartmouth.columns, di_edges2, bi_edges2)
+    G2 = ADMG(dfdartmouth.columns, di_edges2, bi_edges2)
 
     ace_obj2 = CausalEffect(graph=G2, treatment='sleep', outcome='gpa')
     ace_sens, Ql_sens, Qu_sens = ace_obj2.compute_effect(
-        dfDartmouth, "aipw", n_bootstraps=200, alpha=0.05)
+        dfdartmouth, "aipw", n_bootstraps=200, alpha=0.05)
     print("AIPW ACE (Dartmouth): ", ace_sens, "(", Ql_sens, ",", Qu_sens, ")")
 
 
