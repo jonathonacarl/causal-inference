@@ -26,3 +26,6 @@ Directory containing survey data for a cohort of 48 students at Dartmouth Univer
 
 ### pdDFs
 Directory containing csv files for the dataframes I use for analysis in my paper. These dataframes are obtained from **BaselData** and **DartmouthData**, but have been processed for the purpose of analysis. See **3.1 Data Processing** in my paper for more on my data transformation. The DFs are included for ease of reproducibility of causal estimates obtained in my paper.
+
+### tetrad
+Directory containing the Tetrad application I used for graph elicitation and causal discovery in my paper. Also contains a pdf of the graph learned by Tetrad. Minor edge additions/deletions were made based on background knowledge to find the final ADMG used for causal estimation in my paper. See **4.1 Learned ADMG** for more on these edge decisions.
