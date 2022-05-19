@@ -13,7 +13,7 @@
 
 ### [paper](https://github.com/jonathonacarl/causal-inference/tree/main/paper)
 ```diff
-@@ Contains a pdf of my final paper, along with a matplotlib graph summarizing my causal estimates. @@
+@@ Contains a pdf of my final paper, along with a matplotlib graph summarizing my causal estimates and my posited ADMG for my sensitivity analysis. @@
 ```
 
 ### [util.py](https://github.com/jonathonacarl/causal-inference/blob/main/util.py)
