@@ -124,6 +124,8 @@ def findIndicators(directory):
 def mergeDataFrames(f):
     """
     The function used to produce a pandas dataframe from Wang et. al's data (Dartmouth University)
+    *parameters*
+    f: a filepath containing all the directories you want read into a dataframe
     """
 
     path = f

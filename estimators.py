@@ -12,7 +12,7 @@ from util import *
 def odds_ratio(X, Y, Z, data):
     """
     Compute the odds ratio OR(X, Y | Z).
-    *params*
+    *parameters*
     X, Y: names of variables in the data frame. 
     Z: list of covariates
 
