@@ -50,31 +50,39 @@ def main():
     # Causal Estimation: Primal IPW and Dual IPW
     ################################################
     
-    # di_edges = [('SQ', 'LGA'), ('PhysAct', 'LGA'), ('LGA', 'Exam'),
-    # ('HSG', 'LGA'), ('HSG', 'Exam')]
+    # build ADMG learned in Figure 1
+    di_edges = [('SQ', 'LGA'), ('PhysAct', 'LGA'), ('LGA', 'Exam'),
+    ('HSG', 'LGA'), ('HSG', 'Exam')]
 
-    # bi_edges = [('SQ', 'PhysAct'), ('PhysAct', 'Exam'), ('SQ', 'Exam')]
-    # G = ADMG(dfbasel.columns, di_edges, bi_edges)
+    bi_edges = [('SQ', 'PhysAct'), ('PhysAct', 'Exam'), ('SQ', 'Exam')]
+    G = ADMG(dfbasel.columns, di_edges, bi_edges)
 
-    # ace_obj = CausalEffect(graph=G, treatment='SQ', outcome='Exam')
-    # ace_pipw, Ql, Qu = ace_obj.compute_effect(
-    #     dfbasel, "p-ipw", n_bootstraps=200, alpha=0.05)
-    # ace_apipw, Ql2, Qu2 = ace_obj.compute_effect(
-    #     dfbasel, "apipw", n_bootstraps=200, alpha=0.05)
-    # ace_dipw, Ql3, Qu3 = ace_obj.compute_effect(
-    #     dfbasel, "d-ipw", n_bootstraps=200, alpha=0.05)
+    ace_obj = CausalEffect(graph=G, treatment='SQ', outcome='Exam')
     
-    # print("Primal IPW (Ananke) ACE: ", np.exp(ace_pipw),
-    #       "(", np.exp(Ql), ", ", np.exp(Qu), ")")
-    # print("Augmented Primal IPW (Ananke) ACE: ", np.exp(ace_apipw),
-    #       "(", np.exp(Ql2), ", ", np.exp(Qu2), ")")
-    # print("Dual IPW (Ananke) ACE: ", np.exp(ace_dipw),
-    #       "(", np.exp(Ql3), ", ", np.exp(Qu3), ")")
+    # Primal IPW
+    ace_pipw, Ql, Qu = ace_obj.compute_effect(
+        dfbasel, "p-ipw", n_bootstraps=200, alpha=0.05)
+    
+    # Augmented Primal IPW
+    ace_apipw, Ql2, Qu2 = ace_obj.compute_effect(
+        dfbasel, "apipw", n_bootstraps=200, alpha=0.05)
 
-    # print("Dual IPW (own) ACE: ", np.exp(dual_ipw(data=dfbasel, Y="Exam", A="SQ",
-    #     M="LGA", Z=["PhysAct", "HSG"])))
-    #     compute_confidence_intervals(Y="Exam", A="SQ", M="LGA", Z=["PhysAct", "HSG"],data=dfbasel,
-    #     method_name=[dual_ipw, False]) 
+    # Dual IPW (Ananke)
+    ace_dipw, Ql3, Qu3 = ace_obj.compute_effect(
+        dfbasel, "d-ipw", n_bootstraps=200, alpha=0.05)
+    
+    print("Primal IPW (Ananke) ACE: ", np.exp(ace_pipw),
+          "(", np.exp(Ql), ", ", np.exp(Qu), ")")
+    print("Augmented Primal IPW (Ananke) ACE: ", np.exp(ace_apipw),
+          "(", np.exp(Ql2), ", ", np.exp(Qu2), ")")
+    print("Dual IPW (Ananke) ACE: ", np.exp(ace_dipw),
+          "(", np.exp(Ql3), ", ", np.exp(Qu3), ")")
+
+    # Dual IPW (my own implementation)
+    print("Dual IPW (own) ACE: ", np.exp(dual_ipw(data=dfbasel, Y="Exam", A="SQ",
+        M="LGA", Z=["PhysAct", "HSG"])))
+        # compute_confidence_intervals(Y="Exam", A="SQ", M="LGA", Z=["PhysAct", "HSG"],data=dfbasel,
+        # method_name=[dual_ipw, False]) 
     
     ##################################
     ##      Generate Figure 2       ##
@@ -90,7 +98,7 @@ def main():
     plt.text(1.1, 1.8, "1.647", font="serif")
     plt.text(2.1, 1.8, "1.647", font="serif")
     plt.text(2.8, 1.3, "1.103", font="serif")
-    #plt.savefig("graph.pdf")
+    #plt.savefig("estimates.pdf")
 
     ################################################
     # Sensitivity Analysis via Dartmouth dataset
@@ -103,9 +111,8 @@ def main():
     del dfdartmouth['id']
     dfdartmouth = predictVariable(dfdartmouth, "expectedGrade", ["study"])
     dfdartmouth = predictVariable(dfdartmouth, "gpa", ["study", "sleep", "stress"])
-    print(dfdartmouth)
 
-    # obtain causal estimate via aipw
+    # Build posited ADMG discussed in Sensitivity Analysis
     di_edges2 = [('exercise', 'sleep'), ('exercise', 'stress'), ('social', 'stress'),
                  ('study', 'expectedGrade'), ('expectedGrade', 'gpa'), ('stress', 'gpa'), ('sleep', 'gpa')]
 
@@ -113,6 +120,7 @@ def main():
 
     G2 = ADMG(dfdartmouth.columns, di_edges2, bi_edges2)
 
+    # Augmented IPW estimate
     ace_obj2 = CausalEffect(graph=G2, treatment='sleep', outcome='gpa')
     ace_sens, Ql_sens, Qu_sens = ace_obj2.compute_effect(
         dfdartmouth, "aipw", n_bootstraps=200, alpha=0.05)
