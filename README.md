@@ -1,6 +1,6 @@
 # [The Effect of Sleep Quality on Academic Performance in Undergraduate Students](https://github.com/jonathonacarl/causal-inference/blob/main/paper/joncarl-paper.pdf)
 
-## A Causal Analysis of Sleep Quality on Academic Performance
+## [A Causal Analysis of Sleep Quality on Academic Performance](https://github.com/jonathonacarl/causal-inference/blob/main/paper/joncarl-paper.pdf)
 
 ```diff
 @@ This repository contains a few directories and files used to produce the results obtained in my paper @@
